@@ -1,0 +1,29 @@
+{
+  "name": "hard-backend",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "This is my second project with Node.js. This project is mainly for studying authorization.",
+  "main": "index.js",
+  "scripts": {
+    "start": "start index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ilyas-xolov/hard-backend.git"
+  },
+  "author": "Ilyas Xolov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ilyas-xolov/hard-backend/issues"
+  },
+  "homepage": "https://github.com/ilyas-xolov/hard-backend#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongoose": "^8.9.5"
+  }
+}
