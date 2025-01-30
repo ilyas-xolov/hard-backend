@@ -1,45 +1,29 @@
 import express from "express";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
-import postModel from "./models/post.model.js";
+import dotenv from "dotenv"; 
+import postRouter from "./router/post.route.js";
+import color from "colors"; 
+import fileUpload from "express-fileupload";
 
 dotenv.config();
+
 const server = express();
 
 server.use(express.json());
+server.use(fileUpload)
 
-
-
-
-
-// -------------------- REQUEST -------------------- 
-server.get('/',async ( req, res )=> {
-    const list = await postModel.find();
-
-    res.status(200).json({data: list})
-    res.end()
-})
-
-server.post('/',async ( req, res )=> {
-    const {title, body} = req.body
-    const newItem = await postModel.create({title,body})
-
-    res.status(201).json(newItem);
-    res.end()
-})
-
-
-
+server.use('/api/post',postRouter);
 
 
 // -------------------- CONNECTING -------------------- 
 const Connection = async ()=> {
     try {
         server.listen(process.env.PORT, async () => console.log(`Listening on http://localhost:${process.env.PORT}`));
-        await mongoose.connect(process.env.MONGO_URL).then(console.log('Connection success with MongoDb'));
-    } catch (error) {
-        console.log('MongoDb connection error: ' + error);
-    }
+        try {
+            await mongoose.connect(process.env.MONGO_URL).then(console.log('Connection success with MongoDb'));
+        } catch (error) {console.log(color.red('Connection error with MongoDb: ') + error)}
+        
+    } catch (error){console.log(color.red('Syntax Error: ') + error)}
 }
 
 Connection();
