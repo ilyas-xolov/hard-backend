@@ -6,23 +6,25 @@ import path from "path";
 import fs from "fs";
 
 class FileService {
-    save(file){
+    
+    save(file){ 
         try {
             const __filename = fileURLToPath(import.meta.url);
             const __dirname = path.dirname(__filename);
     
             const fileName = uuidv4() + '.jpg';
             const currentDirname = __dirname;
-            const staticDir = path.join(currentDirname,'..','static');
-    
+            const staticDir = path.join(currentDirname,'..','static'); 
+            const fileUrl = path.join(staticDir,fileName);
             if(!fs.existsSync(staticDir)){
-                fs.mkdir(staticDir,{recursive});
+                fs.mkdirSync(staticDir,{recursive: true});
             }
+            
+            file.mv(fileUrl);
 
-            file.mv(staticDir+fileName);
-
+            return fileName
         } catch (error) {
-            throw new Error(color.red("Error on save file"))
+            throw new Error(color.red("Error on save file: ") + error)
         }
     }
 }

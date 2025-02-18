@@ -6,11 +6,10 @@ class postServer {
         return postModel.where(params);
     }
 
-    async create(v,p){
-        console.log('photo',p);
-        
-        const photo = null;
-        return await postModel.create({...v,photo})
+    async create(v,image){ 
+        const photo = image ? fileService.save(image) : null; 
+        const res = {...v,photo} 
+        return await postModel.create(res)
     }
 
     async delete(id){

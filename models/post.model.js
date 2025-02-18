@@ -6,5 +6,5 @@ const postSchema = new Schema({
     photo: {type: String },
 },{timestamps: true})
 
-
-export default model('Post',postSchema)
+const postModel = model('Post',postSchema);
+export default postModel;

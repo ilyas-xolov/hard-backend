@@ -1,4 +1,4 @@
-import postServer from "../server/post.service.js";
+import postServer from "../service/post.service.js";
 
 class PostController {
 
@@ -9,22 +9,21 @@ class PostController {
             res.status(200).json({ data:list, dataLength:list.length })
             res.end();
         } catch (error) {
-            res.status(500).json({error});
+            res.status(500).json({error: "Internal server error: " + error});
             res.end();
         }
     } 
 
-    async create ( req, res ) {
-        console.log('hello');
+    async create ( req, res ) { 
         try {
-            const {title, body} = req.body  
-            const photo = req.files.photo;
-            console.log(photo)
+            const {title, body} = req.body   
+            const photo = req.files?.photo;
             const newItem = await postServer.create({title,body},photo);
             
             res.status(201).json(newItem);
             res.end();
         } catch (error) {
+            console.log(error);
             res.status(500).json({error: "Internal server error: "+ error});
             res.end();
         }
@@ -45,17 +44,15 @@ class PostController {
             res.end();
 
         } catch (error) {
-            res.status(500).json({error});
+            res.status(500).json({error: "Internal server error: " + error});
             res.end();
         }
     }
 
     async update(req, res){
         try {
-            const id = req.params.id;
-            const body = req.body;
-
-            const data = await postServer.update(id,body);
+            const id = req.params.id;  
+            const data = await postServer.update(id,req.body);
 
             if(!data){
                 res.status(400).json({error:'Not found by Id'});
@@ -67,7 +64,8 @@ class PostController {
             res.end();
 
         } catch (error) {
-            res.status(500).json({error});
+            console.log(error)
+            res.status(500).json({error: "Internal server error: " + error});
             res.end();
         }
     }
