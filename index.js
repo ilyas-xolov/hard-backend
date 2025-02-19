@@ -2,15 +2,19 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv"; 
 import color from "colors"; 
+import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
+
+dotenv.config();
+
+
+// ------------------ MIDDLEWARE --------------------- //
 import requestTime from "./middleware/request-time.js";
 
 // ------------------ ROUTES --------------------- //
 import postRouter from "./router/post.route.js";
 import authRouter from "./router/auth.route.js";
-import cookieParser from "cookie-parser";
 
-dotenv.config();
 
 const server = express();
 server.use(requestTime);

@@ -1,6 +1,8 @@
 import userModel from "../models/user.model.js"
 import userDto from "../dtos/user.dto.js";
 import bcrypt from "bcrypt"
+import tokenService from "./token.service.js";
+import mailService from "./mail.service.js";
 
 class AuthService { 
     async register(email, easyPassword) {
@@ -8,13 +10,17 @@ class AuthService {
         if (existUser) {
             throw new Error("Email already exists.");
         }
-        console.log(easyPassword)
         const password = await bcrypt.hash(easyPassword, 10);
+        const userInfo = await userModel.create({ email, password});
 
-        const user = await userModel.create({ email, password});
-        console.log(user);
+        const user = new userDto(userInfo)
+        const tokens = tokenService.generateToken({...user})
 
-        return new userDto(user); 
+        await mailService.sendMail(email,`${process.env.API_URL}/api/auth/activation/${user.id}`);
+
+        tokenService.saveToken( user.id, tokens.refreshToken )
+
+        return { ...user, ...tokens }; 
     }
 
     async activation(userId){
