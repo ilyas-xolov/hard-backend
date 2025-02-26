@@ -5,12 +5,11 @@ class PostController {
 
     async get( req, res, next) {
         try {
-            const params = req.query;
-            const list = await postServer.get(params);
+            const author = req.user.id; 
+            const list = await postServer.get(author);
             res.status(200).json({ data:list, dataLength:list.length })
-            res.end();
         } catch (error) {
-            next(BaseError(500, error.message))
+            next(error)
         }
     } 
 
@@ -25,7 +24,7 @@ class PostController {
                 throw BaseError.BadRequest('title and body required');
             }  
             const photo = req.files?.photo;
-            const newItem = await postServer.create({title,body},photo);
+            const newItem = await postServer.create({title,body, author: req.user.id},photo);
             
             res.status(201).json(newItem);
             res.end();
@@ -37,7 +36,7 @@ class PostController {
 
 
 
-    async delete(req, res){
+    async delete(req, res, next){
         try {
             const id = req.params.id;
             const data = await postServer.delete(id);
@@ -57,7 +56,7 @@ class PostController {
 
 
 
-    async update(req, res){
+    async update(req, res, next){
         try {
             const id = req.params.id;  
             const data = await postServer.update(id,req.body);
@@ -67,8 +66,6 @@ class PostController {
             }
 
             res.status(200).json({data});
-            res.end();
-
         } catch (error) {
            next(error)
         }

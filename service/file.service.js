@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 import color from 'colors';
 import path from "path";
 import fs from "fs";
-import BaseError from '../errors/base.error';
+import BaseError from '../errors/base.error.js';
 
 class FileService {
     
