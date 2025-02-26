@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 import color from 'colors';
 import path from "path";
 import fs from "fs";
+import BaseError from '../errors/base.error';
 
 class FileService {
     
@@ -24,7 +25,7 @@ class FileService {
 
             return fileName
         } catch (error) {
-            throw new Error(color.red("Error on save file: ") + error)
+            throw BaseError("Error on save file: " + error);
         }
     }
 }
