@@ -1,16 +1,22 @@
 import userModel from "../models/user.model.js"
 import userDto from "../dtos/user.dto.js";
-import bcrypt from "bcrypt"
+// import bcrypt from "bcrypt"
+import bcrypt from "bcryptjs";
 import tokenService from "./token.service.js";
 import mailService from "./mail.service.js"; 
+import BaseError from "../errors/base.error.js";
 
 class AuthService { 
+
+
+    
     async register(email, easyPassword) {
         const existUser = await userModel.findOne({ email });
         if (existUser) {
-            throw new Error("Email already exists.");
+            throw BaseError.BadRequest("Email already exists.");
         }
-        const password = await bcrypt.hash(easyPassword, 10);
+        const salt = await bcrypt.genSalt(10);
+        const password = await bcrypt.hash(easyPassword, salt); 
         const userInfo = await userModel.create({ email, password});
 
         const user = new userDto(userInfo)
@@ -23,25 +29,31 @@ class AuthService {
         return { ...user, ...tokens }; 
     }
 
+
+
+
     async activation(userId){
         const findOne = await userModel.findById(userId);
         if(!findOne){
-            throw new Error("Account not found!");
+            throw BaseError.UnauthorizedError("Account not found!");
         }
 
         findOne.isActivated = true;
         return await findOne.save();
     }
 
+
+
+
     async login(email, password){
         const userExists = await userModel.findOne({ email });
         if(!userExists){
-            throw new Error("Email not found")
+            throw BaseError.BadRequest("Email not found")
         }
 
         const passIsCorrect = await bcrypt.compare(password, userExists.password);
         if(!passIsCorrect){
-            throw new Error("Password is incorrect");
+            throw BaseError.BadRequest("Password is incorrect");
         }
 
         const user = new userDto(userExists);
@@ -52,24 +64,30 @@ class AuthService {
 
     }
 
+
+
+
     async logout(refreshToken){
         if(!refreshToken){
-            throw new Error("We are already logged out.");
+            throw BaseError.BadRequest("We are already logged out.");
         }
 
         return await tokenService.removeToken(refreshToken);
     }
 
+
+
+
     async refresh(refreshToken){
         if(!refreshToken){
-            throw new Error("Token is not defined");
+            throw BaseError.UnauthorizedError("Token is not defined");
         }
 
         const userPayload = tokenService.verifyRefresh(refreshToken);
         const tokenDb = await tokenService.findToken(refreshToken);
 
         if(!userPayload || !tokenDb){
-            throw new Error("Token not found");
+            throw BaseError.UnauthorizedError("Token not found");
         }
 
         const userInfo = await userModel.findById(userPayload.id);

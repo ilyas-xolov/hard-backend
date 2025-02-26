@@ -4,28 +4,28 @@ import dotenv from "dotenv";
 import color from "colors"; 
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
-
+import cors from "cors";
 dotenv.config();
 
 
-// ------------------ MIDDLEWARE --------------------- //
-import requestTime from "./middleware/request-time.js";
 
 // ------------------ ROUTES --------------------- //
 import postRouter from "./router/post.route.js";
 import authRouter from "./router/auth.route.js";
+import errorMiddleware from "./middleware/error.middleware.js";
 
 
 const server = express();
-server.use(requestTime);
-server.use(cookieParser({}))
+server.use(cors());
+server.use(cookieParser({}));
 server.use(express.json());
-server.use(express.static("static"))
+server.use(express.static("static"));
 server.use(fileUpload({}));
 
 server.use('/api/post',postRouter);
 server.use('/api/auth',authRouter);
 
+server.use(errorMiddleware);
 
 const Connection = async ()=> { // CONNECTING ...
     try {
