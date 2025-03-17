@@ -16,7 +16,8 @@ class AuthController {
             res.cookie("refreshToken", data.refreshToken,{httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000});
             res.status(200).json({ data });
         } catch (error) {
-           next(error);
+            console.log(error)
+            next(error);
         }
     }
     
@@ -24,7 +25,7 @@ class AuthController {
         try {
             const userId = req.params.id;
             await authService.activation(userId);
-            res.redirect('https://youtube.com');
+            res.redirect(process.env.API_URL);
         } catch (error) {
            next(error);
         }
@@ -40,7 +41,7 @@ class AuthController {
 
             res.json({data});
         } catch (error) {
-           next(error);
+            next(error);
         }
     }
 

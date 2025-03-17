@@ -32,7 +32,7 @@ const Connection = async ()=> { // CONNECTING ...
         server.listen(process.env.PORT, async () => console.log(`Listening on http://localhost:${process.env.PORT}`));
         try {
             await mongoose.connect(process.env.MONGO_URL).then(console.log('Connection success with MongoDb'));
-        } catch (error) {console.log(color.red('Connection error with MongoDb: ') + error)}
+        } catch (error) {console.log(error)}
         
     } catch (error){console.log(color.red('Syntax Error: ') + error)}
 }
